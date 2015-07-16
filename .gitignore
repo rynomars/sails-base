@@ -1,0 +1,10 @@
+node_modules
+dist
+.tmp
+bower_components
+*.swp
+
+.DS_Store
+npm-debug.log
+local.js
+env
