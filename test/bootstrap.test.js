@@ -1,7 +1,6 @@
 var Sails = require('sails'),
   sails;
 
-console.log("-------------------------");
 before(function(done) {
   Sails.lift({
     // configuration for testing purposes
