@@ -7,4 +7,5 @@ bower_components
 .DS_Store
 npm-debug.log
 local.js
-env
+config/env/production.js
+config/env/development.js
