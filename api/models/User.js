@@ -39,7 +39,7 @@ module.exports = {
             attributes.username = attributes.email;
         }
 
-        encryptPassword(this.password, function(hash) {
+        encryptPassword(attributes.password, function(hash) {
             attributes.password = hash;
             next();
         });
