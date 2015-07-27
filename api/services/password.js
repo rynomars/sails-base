@@ -6,20 +6,29 @@ var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 
 /**
- * password service
- *
+ * Password Service Interface
  */
-module.exports.forgot = function(req, res) {
-    var username = req.body.username;
-    var message = '';
+module.exports = {
+    forgot: Forgot,
+    reset: Reset
+}
 
-    if (!(username)) {
-        if (sails.config.app.requireUsername) {
-            err ='username/email is required to reset password';
-        } else {
-            err = 'email is required to reset password';
-        }
-        return handleErr(res, err);
+/** ************************ **/
+/**      Implementation      **/
+/** ************************ **/
+
+/**
+ *  Forgot password implementation
+ *  @param string username
+ *  @param function done
+ */
+function Forgot(username, done) {
+    if (!username) {
+        err = (sails.config.app.requireUsername)?
+                    'username/email is required to reset password':
+                    'email is required to reset password';
+
+        return done(err);
     }
 
     if (sails.config.app.requireUsername && !validator.isEmail(username)) {
@@ -28,21 +37,24 @@ module.exports.forgot = function(req, res) {
         User.findOneByEmail(username, processUser);
     }
 
-    /** **/
+    /**
+     *  Process User
+     **/
     function processUser(err, user) {
         if (err) {
-            return handleErr(res, 'Unable to retrieve user.');
+            return done('Unable to retrieve user.');
         }
         if (!user) {
-            return handleErr(res, 'Ther user was not found.');
+            return done('Ther user was not found.');
         }
+
         createToken(user);
-        return res.status(200).send({message: 'Request completed'});
+
+        done(null, 'Request completed');
     }
 
     /** **/
     function createToken(user) {
-
         crypto.randomBytes(20, function(err, buf) {
             if(err) {
                 return;
@@ -51,7 +63,6 @@ module.exports.forgot = function(req, res) {
             saveUser(user, token);
         });
     }
-
 
     /** **/
     function saveUser(user, token) {
@@ -98,19 +109,23 @@ module.exports.forgot = function(req, res) {
     }
 };
 
-module.exports.reset = function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-    var token = req.body.token;
-    var message = '';
-
+/**
+ *  Reset password using a token
+ *  @param string username
+ *  @param string password
+ *  @param string token
+ *  @param function done
+ *
+ */
+function Reset(username, password, token, done) {
     if ( !username || !password || !token ) {
         if (sails.config.app.requireUsername) {
             err = 'username/email, password and reset token is required';
         } else {
             err = 'email, password and reset token is required';
         }
-        return handleErr(res, err);
+
+        return done(err);
     }
 
     if (sails.config.app.requireUsername && !validator.isEmail(username)) {
@@ -119,20 +134,20 @@ module.exports.reset = function(req, res) {
         User.findOneByEmail(username, processUserToken); 
     }
 
-
     /** **/
     function processUserToken(err, user) {
         if (err) {
-            return handleErr(res, 'Unable to retrieve user.');
+            return done('Unable to retrieve user.');
         }
         if (!user) {
-            return handleErr(res, 'The user was not found');
+            return done('The user was not found');
         }
         if (user.resetPasswordToken != token || user.resetPasswordExpires < Date.now()) {
-            return handleErr(res, 'The reset token provided is invalid.');
+            return done('The reset token provided is invalid.');
         }
         getHash(user);
-        return res.status(200).send({message: 'Password has been reset'});
+
+        return done(null, 'Password has been reset');
     }
 
     /** **/
@@ -150,8 +165,4 @@ module.exports.reset = function(req, res) {
 
         user.save(function(err, user) { });
     }
-};
-
-function handleErr(res, err) {
-    return res.status(401).send({message: err});
 }

@@ -2,20 +2,20 @@ var assert = require('assert');
 
 var users = [
     {
-        username: 'ethancairns',
-        email: 'ethan@ecairns22.com',
+        username: 'ecairns22',
+        email: 'ecairns22@ecairns22.com',
         password: 'testing123',
         emailVerified: false
     },
     {
-        username: 'rynomars',
-        email: 'rynomars@ecairns22.com',
+        username: 'ryanmarshall',
+        email: 'ryanmarshall@ecairns22.com',
         password: 'testing123',
         emailVerified: true
     }
 ]
 
-describe.only('UserModel', function() {
+describe('UserModel', function() {
   describe('#create()', function() {
     it('should create users', function (done) {
       User.create(users).exec(function(err, users) {
@@ -27,11 +27,11 @@ describe.only('UserModel', function() {
     });
   });
   describe('#find', function() {
-    it('should find two users', function (done) {
+    it('should find at least two users', function (done) {
       User.find()
         .then(function(users) {
           // some tests
-          assert.equal(users.length, 2);
+          assert.equal(users.length>=2, true);
           done();
         })
         .catch(done);
