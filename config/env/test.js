@@ -1,4 +1,5 @@
 module.exports = {
+    jwtSecretKey : 'test',
     models: {
         connection: 'localDiskDb',
         migrate: 'drop'

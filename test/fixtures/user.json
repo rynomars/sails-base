@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "username": "ethancairns",
+        "email": "ethan@ecairns22.com",
+        "password": "testing123",
+        "emailVerified": false
+    },
+    {
+        "id": 2,
+        "username": "rynomars",
+        "email": "rynomars@ecairns22.com",
+        "password": "testing123",
+        "emailVerified": true
+    }
+]

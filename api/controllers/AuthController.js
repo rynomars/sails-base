@@ -17,9 +17,15 @@ module.exports = {
      * The token will then be used to authenticate the user for future requests.
      */
     login: function(req, res) {
+        var email = req.body.email;
         var username = req.body.username;
         var password = req.body.password;
         var message = '';
+
+        //If username is not passed, use email as the username
+        if (!username) {
+            username = email;
+        }
 
         if (!(username) && !password) {
             if (sails.config.app.requireUsername) {
