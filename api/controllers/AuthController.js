@@ -1,8 +1,6 @@
 /* globals User, sails */
 var bcrypt = require('bcrypt-nodejs');
 var validator = require('validator');
-var createSendToken = require('../services/createSendToken.js');
-var emailVerification = require('../services/emailVerification.js');
 
 /**
  * AuthController
@@ -71,7 +69,7 @@ module.exports = {
                     });
                 }
 
-                createSendToken(foundUser, res);
+                CreateSendTokenService(foundUser, res);
             });
         }
     },
@@ -115,8 +113,8 @@ module.exports = {
                 password: password,
                 emailVerified: false
             }).then(function (user) {
-                emailVerification.send(user.email);
-                createSendToken(user, res);
+                EmailVerificationService.send(user.email);
+                CreateSendTokenService(user, res);
             }).catch(function(err) {
                 var message = "";
                 if (err.error == "E_VALIDATION") {
@@ -134,5 +132,5 @@ module.exports = {
     /**
      * Validate the accounts email address.
      */
-    verifyEmail: emailVerification.verify
+    verifyEmail: EmailVerificationService.verify
 };

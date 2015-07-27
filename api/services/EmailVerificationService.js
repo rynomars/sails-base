@@ -18,6 +18,8 @@ exports.send = function(email) {
 
     var token = jwt.encode(payload, sails.config.jwtSecretKey);
 
+    if (!sails.config.email || !sails.config.email.transporter) return null;
+
     var transporter = nodemailer.createTransport(sails.config.email.transporter);
 
     var mailOptions = {
@@ -88,7 +90,6 @@ function getHTML(token) {
 
     var template = _.template(html);
 
-    console.log(token);
     model.verifyUrl += token;
     
 

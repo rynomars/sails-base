@@ -5,9 +5,6 @@ var async = require('async');
 var fs = require('fs');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
-var createSendToken = require('../services/createSendToken.js');
-var emailVerification = require('../services/emailVerification.js');
-var password = require('../services/password.js');
 
 module.exports = {
 
@@ -18,7 +15,7 @@ module.exports = {
     reset: Reset,
 
     /** Validate the accounts email address. **/
-    verifyEmail: emailVerification.verify
+    verifyEmail: EmailVerificationService.verify
 };
 
 /**
@@ -29,7 +26,7 @@ module.exports = {
 function Forgot(req, res) {
     var username = req.body.username;
 
-    password.forgot(username,function(err, results) {
+    PasswordService.forgot(username,function(err, results) {
         if (err) {
             return res
                     .status(401)
@@ -52,7 +49,7 @@ function Reset(req, res) {
     var password = req.body.password;
     var token = req.body.token;
 
-    password.reset(username, password, token, function(err, results) {
+    PasswordService.reset(username, password, token, function(err, results) {
         if (err) {
             return res
                     .status(401)

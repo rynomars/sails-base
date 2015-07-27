@@ -66,7 +66,6 @@ function Forgot(username, done) {
 
     /** **/
     function saveUser(user, token) {
-        console.log('saveUser');
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
@@ -77,7 +76,9 @@ function Forgot(username, done) {
 
     /** **/
     function sendEmail(user, token) {
-        console.log('sendEmail');
+
+        if (!sails.config.email || !sails.config.email.transporter) return false;
+
         var transporter = nodemailer.createTransport(sails.config.email.transporter);
 
         var mailOptions = { 
@@ -152,7 +153,7 @@ function Reset(username, password, token, done) {
 
     /** **/
     function getHash(user) {
-        encryptPassword(password, function(hash) {
+        EncryptPasswordService(password, function(hash) {
             user.password = hash;
             saveUser(user);
         });
