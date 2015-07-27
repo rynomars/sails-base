@@ -96,19 +96,39 @@ module.exports = {
                 message: message
             });
         }
+        User.findOne({
+              or : [
+                { username: username },
+                { email: email }
+          ]
+        }).then(function(user) {
+            if(user) {
+                message = "An account already exists with this username or email";
+                return res.status(401).send({
+                    message: message
+                });
+             }
 
-        User.create({
-            username: username,
-            email: email,
-            password: password,
-            emailVerified: false
-        }).exec(function (err, user) {
-            console.log(user);
-            if (err) {
-                return res.status(403);
-            }
-            emailVerification.send(user.email);
-            createSendToken(user, res);
+            User.create({
+                username: username,
+                email: email,
+                password: password,
+                emailVerified: false
+            }).then(function (user) {
+                emailVerification.send(user.email);
+                createSendToken(user, res);
+            }).catch(function(err) {
+                var message = "";
+                if (err.error == "E_VALIDATION") {
+                    message = "Data Validation Error!";
+                } else {
+                    console.log(err);
+                    message = "An error occurred while trying to create account!"
+                }
+                return res.status(401).send({
+                    message: message
+                });
+            });
         });
     },
     /**
