@@ -5,8 +5,6 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
-var encryptPassword = require('../services/encryptPassword.js');
-
 module.exports = {
     attributes: {
         username: {
@@ -39,7 +37,7 @@ module.exports = {
             attributes.username = attributes.email;
         }
 
-        encryptPassword(attributes.password, function(hash) {
+        EncryptPasswordService(attributes.password, function(hash) {
             attributes.password = hash;
             next();
         });
