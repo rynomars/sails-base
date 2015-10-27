@@ -10,6 +10,11 @@ module.exports = function (req, res, next) {
 
     //Just get the payload portion and elimiate the "Bearer" text
     var token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+        return res.status(401).send({
+            message: 'Authentication failed'
+        });
+    }
 
     var payload = jwt.decode(token, sails.config.jwtSecretKey); // jshint ignore:line
 
@@ -18,5 +23,23 @@ module.exports = function (req, res, next) {
             message: 'Authentication failed'
         });
     }
-    next();
+
+    User.findOne(payload.sub).exec(function (err, data) {
+      if (err) {
+        return res.status(401).send({
+            message: 'Authentication failed'
+        });
+      }
+      if (!data) {
+        return res.status(401).send({
+            message: 'Authentication failed'
+        });
+      }
+
+      if(req.body) {
+        req.body.user = data.id;
+      }
+      next();
+    });
+
 };

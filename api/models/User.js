@@ -30,7 +30,15 @@ module.exports = {
             type: 'string',
             required: false,
             unique: true
-        }
+        },
+        user: {
+          model: 'profile'
+       },
+       toJSON: function() {
+        var obj = this.toObject();
+        delete obj.password;
+        return obj;
+      }
     },
     beforeCreate: function(attributes, next) {
         if (!sails.config.app.requireUsername) {

@@ -19,8 +19,12 @@
 
 module.exports.policies = {
 
-  'JobController': {
+  'ProfileController': {
+      '*': ['jwtAuth'],
       'find': ['jwtAuth']
+  },
+
+  'UserController': {
   }
   /***************************************************************************
   *                                                                          *
