@@ -34,7 +34,16 @@ module.exports = {
         }
     },
     // Lifecycle Callbacks
-    afterCreate: function (values, cb) {
+    afterCreate: function (values, callback) {
+      User.findOne(values.user).exec(
+        function (err, theUser) {
+          console.log(theUser);
+          if (err) return callback(err);
+          if (!theUser) return callback(new Error('User not found.'));
+        
+          theUser.profile = values.id;  
+          theUser.save(callback);
+      });
     }
 };
 

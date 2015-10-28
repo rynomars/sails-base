@@ -31,7 +31,7 @@ module.exports = {
             required: false,
             unique: true
         },
-        user: {
+        profile: {
           model: 'profile'
        },
        toJSON: function() {
