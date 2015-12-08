@@ -1,65 +1,101 @@
-var assert = require('assert');
+'use strict';
 
-var users = [
-    {
-        username: 'ecairns22',
-        email: 'ecairns22@ecairns22.com',
-        password: 'testing123',
-        emailVerified: false
-    },
-    {
-        username: 'ryanmarshall',
-        email: 'ryanmarshall@ecairns22.com',
-        password: 'testing123',
-        emailVerified: true
-    }
-]
+var chai = require('chai'),
+    expect = chai.expect,
+    sinon = require('sinon');
 
 describe('UserModel', function() {
-  describe('#create()', function() {
-    it('should create users', function (done) {
-      User.create(users).exec(function(err, users) {
-        assert.equal(users.length, 2);
-        assert.equal((users[0].id>0), true);
-        assert.equal((users[1].id>0), true);
-        done()
-      })
+  describe('Attributes', function() {
+
+    describe('username', function() {
+      it('should have the correct attributes', function () {
+        expect(User.attributes.username).to.exist;
+        expect(User.attributes.username.required).to.be.true;
+        expect(User.attributes.username.type).to.be.equal('string');
+        expect(User.attributes.username.unique).to.be.true;
+      });
+    });
+
+    describe('email', function() {
+      it('should have the correct attributes', function () {
+        expect(User.attributes.email).to.exist;
+        expect(User.attributes.email.required).to.be.true;
+        expect(User.attributes.email.type).to.be.equal('string');
+        expect(User.attributes.email.unique).to.be.true;
+      });
+    });
+
+    describe('password', function() {
+      it('should have the correct attributes', function () {
+        expect(User.attributes.password).to.exist;
+        expect(User.attributes.password.required).to.be.true;
+        expect(User.attributes.password.type).to.be.equal('string');
+        expect(User.attributes.password.minLength).to.be.equal(8);
+      });
+    });
+      
+    describe('emailVerified', function() {
+      it('should have the correct attributes', function () {
+        expect(User.attributes.emailVerified).to.exist;
+        expect(User.attributes.emailVerified.required).to.be.true;
+        expect(User.attributes.emailVerified.type).to.be.equal('boolean');
+      });
+    });
+
+    describe('resetPasswordToken', function() {
+      it('should have the correct attributes', function () {
+        expect(User.attributes.resetPasswordToken).to.exist;
+        expect(User.attributes.resetPasswordToken.required).to.be.false;
+        expect(User.attributes.resetPasswordToken.type).to.be.equal('string');
+        expect(User.attributes.resetPasswordToken.unique).to.be.true;
+      });
+    });
+
+    it.skip('should remove the password attribute when sent to Json', function () {
     });
   });
-  describe('#find', function() {
-    it('should find at least two users', function (done) {
-      User.find()
-        .then(function(users) {
-          // some tests
-          assert.equal(users.length>=2, true);
-          done();
-        })
-        .catch(done);
+
+  describe('BeforeCreate', function() {
+    var sandbox, MockSails;
+
+    beforeEach(function() {
+      sandbox = sinon.sandbox.create();
+
+      MockSails = {
+        config: {
+          app: {
+            requireUsername: false
+          }
+        }
+      };
     });
-  });
-  describe('#findOneByUsername()', function() {
-    it('should check find function', function (done) {
-      User.findOneByUsername( users[0].username )
-        .then(function(user) {
-          // some tests
-          assert.equal(user.username, users[0].username);
-          done();
-        })
-        .catch(done);
+
+    afterEach(function() {
+      sandbox.restore();
     });
-  });
-  describe('#updateUsernameNonUnique()', function() {
-    it('should not allow username to be changed to a non unique', function (done) {
-      User.update({username: users[0].username}, {username: users[1].username})
-        .then(function(updates) {
-          // some tests
-          assert.fail(updates[0].username, users[0].username, 'Username changed to one that already exists');
-          done();
-        })
-        .catch(function(err) {
-            assert.equal(err.ValidationError.username[0].value, users[1].username);
-            done();
-        });
+
+    it('should set the username equal to emal if config requireUsername is not true', function (done) {
+      var attributes = {
+          username: '', 
+          email: 'test@mail.com', 
+          password: 'junkpassword'
+      };
+      
+      sails.config.app.requireUsername = false;
+
+
+      var spyEncryptPasswordService = sandbox.spy(EncryptPasswordService);
+
+      User.beforeCreate(attributes, function() {
+        expect(spyEncryptPasswordService.called).to.be.true;
+        done();
+      });
+
+      expect(attributes.username).to.be.equal(attributes.email);
+
+    });
+
+    it('should encrypt the password', function () {
     });
   });
 });

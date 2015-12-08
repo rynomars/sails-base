@@ -44,7 +44,7 @@ exports.verify = function (req, res) {
     var token = req.query.token;
     
     if (!token) {
-        res.status(400).send({
+        return res.status(400).send({
             message: 'Invalid token provided'
         });
     }
@@ -78,7 +78,7 @@ exports.verify = function (req, res) {
             });
         }
 
-        return createSendToken(foundUser, res);
+        return CreateSendTokenService(foundUser, res);
     });
 };
 

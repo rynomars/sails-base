@@ -1,4 +1,10 @@
 /* globals User, sails */
+/**
+ * PasswordController
+ *
+ * @description :: Server-side logic for managing passwords
+ * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ */
 var crypto = require('crypto');
 var validator = require('validator');
 var async = require('async');
@@ -62,9 +68,3 @@ function Reset(req, res) {
     });
 }
 
-/**
- * PasswordController
- *
- * @description :: Server-side logic for managing passwords
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */

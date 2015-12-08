@@ -132,5 +132,5 @@ module.exports = {
     /**
      * Validate the accounts email address.
      */
-    verifyEmail: EmailVerificationService.verify
+    verify: EmailVerificationService.verify
 };

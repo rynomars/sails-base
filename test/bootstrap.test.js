@@ -1,30 +1,43 @@
-var Sails = require('sails'),
-    Barrels = require('barrels');
+var Sails = require('sails');
+//var Barrels = require('barrels');
 
+
+var Sails = require('sails');
+
+// Global before hook
 before(function (done) {
-    Sails.lift({
-      log: {
-        level: 'error'
-      },
-      models: {
-        connection: 'test',
-        migrate: 'drop'
-      }
-    }, function(err) {
-      if (err)
-        return done(err);
+  // Lift Sails with test database
+  Sails.lift({
+    log: {
+      level: 'error'
+    },
+    models: {
+      connection: 'test',
+      migrate: 'drop'
+    }
+  }, function(err) {
+    if (err)
+      return done(err);
 
-      // Load fixtures
-      var barrels = new Barrels();
+    /*
+    // Load fixtures
+    var barrels = new Barrels();
 
-      // Populate the DB
-      barrels.populate(function(err) {
-        done(err);
-      });
+    // Save original objects in `fixtures` variable
+    fixtures = barrels.data;
+
+    // Populate the DB
+    barrels.populate(function(err) {
+      done(err, sails);
     });
-  });
+    */
+    done(err, sails);
 
-after(function(done) {
-  // here you can clear fixtures, etc.
+  });
+});
+
+// Global after hook
+after(function (done) {
+  console.log(); // Skip a line before displaying Sails lowering logs
   Sails.lower(done);
 });

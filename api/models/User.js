@@ -41,14 +41,14 @@ module.exports = {
       }
     },
     beforeCreate: function(attributes, next) {
-        if (!sails.config.app.requireUsername) {
-            attributes.username = attributes.email;
-        }
+      if (!sails.config.app.requireUsername) {
+        attributes.username = attributes.email;
+      }
 
-        EncryptPasswordService(attributes.password, function(hash) {
-            attributes.password = hash;
-            next();
-        });
+      EncryptPasswordService(attributes.password, function(hash) {
+        attributes.password = hash;
+        next();
+      });
     }
 };
 
